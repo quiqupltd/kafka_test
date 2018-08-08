@@ -18,8 +18,7 @@ use Mix.Config
 #
 # You can also configure a 3rd-party app:
 #
-#     config :logger, level: :info
-#
+config :logger, level: :debug
 
 # It is also possible to import configuration files, relative to this
 # directory. For example, you can emulate configuration per environment
@@ -28,3 +27,17 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
+
+config :kafka_ex,
+  brokers: [
+    {"localhost", 9092}
+  ],
+  consumer_group: :no_consumer_group,
+  disable_default_worker: true,
+  sync_timeout: 3000,
+  max_restarts: 10,
+  max_seconds: 60,
+  commit_interval: 5_000,
+  commit_threshold: 100,
+  use_ssl: false,
+  kafka_version: "1.1.0"
