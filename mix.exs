@@ -5,7 +5,7 @@ defmodule KafkaTest.Mixfile do
     [
       app: :kafka_test,
       version: "0.1.0",
-      elixir: "~> 1.5",
+      elixir: "~> 1.4",
       start_permanent: Mix.env == :prod,
       deps: deps()
     ]
@@ -23,8 +23,9 @@ defmodule KafkaTest.Mixfile do
   defp deps do
     [
       # {:dep_from_hexpm, "~> 0.3.0"},
-      # {:dep_from_git, git: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
-      {:kafka_ex, "~> 0.8.3"}
+      # {:dep_from_git, g4it: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
+      # {:kafka_ex, "~> 0.8.3"}
+      {:kafka_ex, path: "./../kafka_ex"}
     ]
   end
 end

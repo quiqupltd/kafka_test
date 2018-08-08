@@ -41,7 +41,7 @@ defmodule KafkaTest.ConsumerSupervisor do
     # opts = [strategy: :one_for_one, name: KafkaTest.Supervisor]
     # Supervisor.init(children, opts)
 
-    Kernel.apply(KafkaEx.ConsumerGroup, :start_link, KafkaTest.TrackingConsumer.supervisor_options)
+    {:ok, pid} = Kernel.apply(KafkaEx.ConsumerGroup, :start_link, KafkaTest.TrackingConsumer.supervisor_options)
   end
 
   @impl true

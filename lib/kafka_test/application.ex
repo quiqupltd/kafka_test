@@ -5,9 +5,10 @@ defmodule KafkaTest.Application do
     import Supervisor.Spec
 
     children = [
-      KafkaTest.KafkaMonitor,
-      # supervisor(KafkaEx.ConsumerGroup, KafkaTest.TrackingConsumer.supervisor_options),
-      KafkaTest.ConsumerSupervisor
+      supervisor(KafkaEx.ConsumerGroup, KafkaTest.TrackingConsumer.supervisor_options),
+
+      # KafkaTest.KafkaMonitor,
+      # KafkaTest.ConsumerSupervisor
     ]
 
     opts = [strategy: :rest_for_one, name: KafkaTest.Supervisor]
