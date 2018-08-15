@@ -23,6 +23,8 @@ defmodule KafkaTest.TrackingConsumer do
   ]
 
   def handle_message_set(message_set, state) do
+    self() |> IO.inspect(label: "#{__MODULE__}.handle_message_set")
+
     for %Message{value: message} <- message_set do
       Logger.debug(fn -> "message: " <> inspect(message) end)
     end

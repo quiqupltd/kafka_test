@@ -6,11 +6,13 @@ defmodule KafkaTest.KafkaMonitor do
   @retry_produce_seconds 1
 
   def start_link(_opts) do
+    self() |> IO.inspect(label: "#{__MODULE__}.start_link")
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
   @impl true
   def init(:ok) do
+    self() |> IO.inspect(label: "#{__MODULE__}.init")
     Process.send(self(), :start_worker, [])
 
     {:ok, %{worker_ref: nil}}
@@ -18,7 +20,8 @@ defmodule KafkaTest.KafkaMonitor do
 
   @impl true
   def handle_info(:start_worker, %{worker_ref: worker_ref}) do
-    Application.start(:kafka_ex)
+    self() |> IO.inspect(label: "#{__MODULE__}.handle_info")
+    # Application.start(:kafka_ex)
 
     case KafkaEx.create_worker(:kafka_ex, consumer_group: :no_consumer_group) do
       {:ok, pid} ->
