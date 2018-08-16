@@ -1,21 +1,5 @@
 # KafkaTest
 
-**TODO: Add description**
+kafka_test is a playground for testing changes made to the [KafkaEx](https://github.com/kafkaex/kafka_ex) package.
 
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `kafka_test` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:kafka_test, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/kafka_test](https://hexdocs.pm/kafka_test).
-
+See https://github.com/quiqupltd/kafka_ex for upstream changes not yet merged into main package.
