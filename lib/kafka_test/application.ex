@@ -8,9 +8,6 @@ defmodule KafkaTest.Application do
 
     children = [
       supervisor(KafkaEx.ConsumerGroup, KafkaTest.TrackingConsumer.supervisor_options),
-
-      # KafkaTest.KafkaMonitor,
-      # KafkaTest.ConsumerSupervisor
     ]
 
     self() |> IO.inspect(label: "#{__MODULE__}.start2")
