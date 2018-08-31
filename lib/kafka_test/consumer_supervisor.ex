@@ -3,79 +3,56 @@ defmodule KafkaTest.ConsumerSupervisor do
   A supervisor that monitors consumers
   """
 
-  # use DynamicSupervisor
-  # use Supervisor
+  defmodule State do
+    @moduledoc false
+    defstruct refs: %{}
+  end
+
   use GenServer
   require Logger
 
-  def start_link(opts) do
-    opts |> IO.inspect(label: "opts")
-    # DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)
-    # Supervisor.start_link(__MODULE__, :ok, name: __MODULE__)
-    GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
-  end
+  @dynamic_supervisor DynamicSupervisor
+  @restart_wait_seconds 1
 
-  def init(:ok) do
-    # DynamicSupervisor.init(strategy: :one_for_one)
+  def start_link(opts), do: GenServer.start_link(__MODULE__, opts, name: __MODULE__)
 
-    # # Process.monitor(pid)
+  @impl true
+  def init(child_specs) do
+    DynamicSupervisor.start_link(strategy: :one_for_one, name: @dynamic_supervisor)
 
-    # # supervise(children, strategy: :simple_one_for_one)
+    for child_spec <- child_specs do
+      Process.send(self(), {:start_child, child_spec}, [])
+    end
 
-    # # Supervisor.start_link(children, opts)
-
-    {:ok, %{worker_ref: nil}}
-  end
-
-  def start_consumer do
-    import Supervisor.Spec
-
-    Logger.info("Starting consumer")
-
-    # children = [
-    #   # KafkaTest.TrackingConsumer
-    #   # worker(KafkaTest.TrackingConsumer, [], restart: :temporary)
-    #   supervisor(KafkaEx.ConsumerGroup, KafkaTest.TrackingConsumer.supervisor_options),
-    # ]
-
-    # opts = [strategy: :one_for_one, name: KafkaTest.Supervisor]
-    # Supervisor.init(children, opts)
-
-    {:ok, pid} = Kernel.apply(KafkaEx.ConsumerGroup, :start_link, KafkaTest.TrackingConsumer.supervisor_options)
+    {:ok, %State{}}
   end
 
   @impl true
-  def handle_info({:DOWN, ref, :process, _pid, _reason}, state) do
-    Logger.warn("foo")
+  def handle_info({:start_child, child_spec}, %State{refs: refs}) do
+    case DynamicSupervisor.start_child(@dynamic_supervisor, child_spec) do
+      {:ok, pid} ->
+        Logger.info("#{__MODULE__} monitoring #{inspect(child_spec)} at #{inspect(pid)}")
+        ref = Process.monitor(pid)
+        refs = Map.put(refs, ref, child_spec)
+
+        {:noreply, %State{refs: refs}}
+
+      {:error, error} ->
+        Logger.warn("#{__MODULE__} #{inspect(child_spec)} failed to start #{inspect(error)}. Restarting in #{@restart_wait_seconds} seconds...")
+        Process.send_after(self(), {:start_child, child_spec}, @restart_wait_seconds * 1000)
+
+        {:noreply, %State{refs: refs}}
+    end
   end
 
-  # def start(opts), do: supervise(opts)
-  # defp supervise(opts), do: Supervisor.start_child(__MODULE__, [opts])
+  @impl true
+  def handle_info({:DOWN, ref, :process, _pid, _reason}, %State{refs: refs}) do
+    Logger.warn("#{__MODULE__}.handle_info :DOWN ref:#{inspect ref}")
 
-  # def handle(id) do
+    {child_spec, refs} = Map.pop(refs, ref)
+    Logger.warn("KafkaEx #{inspect(child_spec)} went down. Restarting in #{@restart_wait_seconds} seconds...")
+    Process.send_after(self(), {:start_child, child_spec}, @restart_wait_seconds * 1000)
 
-  # end
-
-  # @doc """
-  # Starts a `GameServer` process and supervises it.
-  # """
-  # def new(id) do
-  #   child_spec = %{
-  #     id: GameServer,
-  #     start: {GameServer, :start_link, [id]},
-  #     restart: :transient
-  #   }
-
-  #   DynamicSupervisor.start_child(__MODULE__, child_spec)
-  # end
-
-  # @doc """
-  # Terminates the `GameServer` process normally. It won't be restarted.
-  # """
-  # def stop_game(game_name) do
-  #   :ets.delete(:games_table, game_name)
-
-  #   child_pid = GameServer.game_pid(game_name)
-  #   DynamicSupervisor.terminate_child(__MODULE__, child_pid)
-  # end
+    {:noreply, %State{refs: refs}}
+  end
 end
