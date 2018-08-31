@@ -24,8 +24,9 @@ defmodule KafkaTest.Mixfile do
     [
       # {:dep_from_hexpm, "~> 0.3.0"},
       # {:dep_from_git, g4it: "https://github.com/elixir-lang/my_dep.git", tag: "0.1.0"},
-      # {:kafka_ex, "~> 0.8.3"}
-      {:kafka_ex, path: "./../kafka_ex"}
+      {:kafka_ex, "~> 0.8.3"},
+      # {:kafka_ex, path: "./../kafka_ex"},
+      {:sigstr_elixir_kafka, git: "https://bitbucket.org/sigstr/sigstr-elixir-kafka.git"}
     ]
   end
 end

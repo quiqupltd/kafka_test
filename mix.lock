@@ -1,1 +1,3 @@
-%{"kafka_ex": {:hex, :kafka_ex, "0.8.3", "16946ec8c50adf8ff5b858b28cff85ed93b16785004b2be1c9959cd2d704a462", [:mix], [], "hexpm"}}
+%{"kafka_ex": {:hex, :kafka_ex, "0.8.3", "16946ec8c50adf8ff5b858b28cff85ed93b16785004b2be1c9959cd2d704a462", [:mix], [], "hexpm"},
+  "murmur": {:hex, :murmur, "1.0.1", "a6e6bced2dd0d666090a9cf3e73699f3b9176bbcf32d35b0f022f137667608e3", [:mix], [], "hexpm"},
+  "sigstr_elixir_kafka": {:git, "https://bitbucket.org/sigstr/sigstr-elixir-kafka.git", "0cd0efc264bcf24236d7e4620848cfcefa6dcb8e", []}}
