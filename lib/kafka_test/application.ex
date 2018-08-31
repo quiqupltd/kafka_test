@@ -2,6 +2,8 @@ defmodule KafkaTest.Application do
   use Application
 
   def start(_type, _args) do
+    import Supervisor.Spec
+
     kafka_genconsumers = [
       %{
         id: KafkaTest.TrackingConsumer,
@@ -10,8 +12,8 @@ defmodule KafkaTest.Application do
     ]
 
     children = [
-      KafkaTest.KafkaMonitor,
-      {KafkaTest.ConsumerSupervisor, kafka_genconsumers},
+      worker(KafkaTest.KafkaMonitor, [[]]),
+      worker(KafkaTest.ConsumerSupervisor, [kafka_genconsumers]),
     ]
 
     opts = [strategy: :rest_for_one, name: KafkaTest.Supervisor]
