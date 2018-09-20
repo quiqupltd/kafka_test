@@ -14,7 +14,7 @@ defmodule KafkaTest.TrackingConsumer do
   ]
   defp gen_consumer_impl, do: __MODULE__
   defp consumer_group_name, do: "tracking_locations"
-  defp topic_names, do: ["com.quiqup.tracking_locations"]
+  defp topic_names, do: ["uk.london.quiqup.tracking_locations"]
   defp consumer_group_opts, do: [
     heartbeat_interval: 1_000,
     commit_interval: 1_000,
